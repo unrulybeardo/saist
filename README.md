@@ -16,7 +16,7 @@ md5sum saist25
 
 # Pstins (Post Install Script)
 
-Pstins is a small post install script to run inside your Arch base system. Again, very easy to read and edit to suite. 
+Pstins is a small post install script to run inside an Arch base system. It's made for my install prefrences, but could be very easily edited to suite. 
 
 Pstinst installs: xorg-server xorg-xinit xterm xorg-fonts xorg-twm virtualbox-guest-utils virtualbox-guest-modules-arch linux-headers polkit ttf-liberation leafpad xfce4 xfce4-goodies gvfs sudo 
 
