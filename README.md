@@ -11,7 +11,7 @@ To run it from the live Arch iso, run:
 
  ./saist25
 
-# --------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------
 
 Pstins is a small post install script to run inside your new saist25 system. Again, very easy to read and edit to suite. 
 
@@ -28,7 +28,7 @@ abb03940150e9d5a8355fa36b95e441c  pstins
 
  ./pstins
 
-# --------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------
 
 I've tested these in only a vbox bios setup so far. 
 
