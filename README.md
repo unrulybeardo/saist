@@ -20,7 +20,7 @@ Pstins is a small post install script to run inside an Arch base system. It's ma
 
 Pstinst installs: xorg-server xorg-xinit xterm xorg-fonts xorg-twm virtualbox-guest-utils virtualbox-guest-modules-arch linux-headers polkit ttf-liberation leafpad xfce4 xfce4-goodies gvfs sudo 
 
-It also sets up some important files, and drops you into an editor to check or further edit them. To procede from nano, just close it (Ctrl + x). The file dropped into for editing is printed in the upper part of nano. 
+It also sets up some important files, and the script drops you into an editor to check or further edit. To proceed from nano, just close it (Ctrl + x). The file dropped into for editing is printed in the upper part of nano. 
 
 To run pstins from a base Arch install, run:
 
