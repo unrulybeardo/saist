@@ -40,7 +40,7 @@ Partitions: sda1 is root, sda2 is swap, sda3 is home.
 
 The passwords are set as "first" for root and jeff.
 
-READ the script to assure yourself everything is ok. If you're unsure, please don't run them.
+READ the scripts to assure yourself all is ok. If you're unsure, please don't run them.
 
 
 
