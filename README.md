@@ -4,12 +4,12 @@ Saist25 is a 25 line (a few more now) bash script to install Arch Linux base, ba
 
 To run it from the live Arch iso, run:
 
-# wget https://tinyurl.com/saist25 && chmod +x saist25
+ wget https://tinyurl.com/saist25 && chmod +x saist25
 
-# md5sum saist25 
+ md5sum saist25 
 8a1cab02eb4736fd83035560dfb934d8  saist25
 
-# ./saist25
+ ./saist25
 
 
 Pstins is a small post install script to run inside your new saist25 system. Again, very easy to read and edit to suite. 
@@ -20,12 +20,12 @@ It also sets up some important files, and drops you into an editor to check or f
 
 To run pstins from a base Arch install, run:
 
-# wget https://tinyurl.com/pstins && chmod +x pstins
+ wget https://tinyurl.com/pstins && chmod +x pstins
 
-# md5sum pstinst
+ md5sum pstinst
 abb03940150e9d5a8355fa36b95e441c  pstins
 
-# ./pstins
+ ./pstins
 
 
 I've tested these in only a vbox bios setup so far. 
