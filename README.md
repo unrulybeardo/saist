@@ -6,8 +6,8 @@ To run it from the live Arch iso, run:
 
  wget https://tinyurl.com/saist25 && chmod +x saist25
 
- md5sum saist25 
-8a1cab02eb4736fd83035560dfb934d8  saist25
+md5sum saist25 
+ 8a1cab02eb4736fd83035560dfb934d8  saist25
 
  ./saist25
 
@@ -23,8 +23,8 @@ To run pstins from a base Arch install, run:
 
  wget https://tinyurl.com/pstins && chmod +x pstins
 
- md5sum pstinst
-abb03940150e9d5a8355fa36b95e441c  pstins
+md5sum pstinst
+ abb03940150e9d5a8355fa36b95e441c  pstins
 
  ./pstins
 
