@@ -28,7 +28,7 @@ To run pstins from a base Arch install, run:
 
 md5sum pstinst
 
- abb03940150e9d5a8355fa36b95e441c  pstins
+ c4582f24dc313d5aabc73cb8ae4af07c  pstins
 
  ./pstins
 
