@@ -2,7 +2,7 @@
 
 Saist25 is a 25 line (a few more now) bash script to install Arch Linux base, base-devel, grub, wget. It's made for my install prefrences, but could be very easily edited to suite on any x86 64 bios hardware.
 
-To run it from the live Arch iso, run:
+To run saist25 from a live Arch iso, run:
 
  wget https://tinyurl.com/saist25 && chmod +x saist25
 
