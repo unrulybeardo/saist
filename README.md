@@ -12,6 +12,8 @@ To run it from the live Arch iso, run:
  ./saist25
 
 
+
+
 Pstins is a small post install script to run inside your new saist25 system. Again, very easy to read and edit to suite. 
 
 Pstinst installs: xorg-server xorg-xinit xterm xorg-fonts xorg-twm virtualbox-guest-utils virtualbox-guest-modules-arch linux-headers polkit ttf-liberation leafpad xfce4 xfce4-goodies gvfs sudo 
@@ -26,6 +28,8 @@ To run pstins from a base Arch install, run:
 abb03940150e9d5a8355fa36b95e441c  pstins
 
  ./pstins
+
+
 
 
 I've tested these in only a vbox bios setup so far. 
