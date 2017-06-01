@@ -1,9 +1,10 @@
 #!/bin/bash
 	#............................................. pstins script May 31 2017
 
-	#.... Install packages with pacman 
- 	pacman -Syu xorg-server xorg-xinit xterm xorg-fonts xorg-twm virtualbox-guest-utils virtualbox-guest-modules-arch linux-headers polkit ttf-liberation leafpad xfce4 xfce4-goodies gvfs sudo 
-
+	#....................................................................................... Install packages with pacman 
+ 	pacman -Syu  xorg-server  xorg-xinit  xterm xorg-fonts  xorg-twm virtualbox-guest-utils \
+		     virtualbox-guest-modules-arch  linux-headers  polkit  ttf-liberation  \
+		     leafpad  xfce4  xfce4-goodies  gvfs  sudo
 set -x
 	cp /etc/X11/xinit/xinitrc /home/jeff/.xinitrc  #......................................... Copy xinitrc to ~/
 
