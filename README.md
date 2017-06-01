@@ -26,7 +26,7 @@ To run pstins from a base Arch install, run:
 
  wget https://tinyurl.com/pstins && chmod +x pstins
 
-md5sum pstinst
+md5sum pstins
 
  c4582f24dc313d5aabc73cb8ae4af07c  pstins
 
