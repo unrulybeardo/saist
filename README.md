@@ -43,6 +43,8 @@ d9b6677fbc26507e74fb14129c7789b7  pstins
 
 Aist (Arch Install Script Template) is a longer version of saist that's setup with feedback to let the user know whats up while running, and is in a more traditional scripting style implementing functions.
 
+To run saist from a live Arch iso, run:
+
  wget https://raw.githubusercontent.com/jeffscode/saist/master/aist && chmod +x aist
  
  or tinyurl: wget https://tinyurl.com/aist-4-arch && chmod +x aist
