@@ -64,7 +64,7 @@ I've tested these in a vbox bios setup so far.
 
 Partitions: sda1 is root, sda2 is swap, sda3 is home. 
 
-The passwords are set as "test" or "first" for root and jeff.
+The passwords are set as "test" for root and jeff.
 
 READ the scripts to assure yourself all is ok. If you're unsure, please don't run them.
 
