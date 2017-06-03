@@ -1,0 +1,196 @@
+#!/bin/bash
+#...................................................... Aist Script June 2 2017
+
+#      Optional color variables list        #
+#-------------------------------------------#
+# Black        0;30     Dark Gray     1;30  #
+# Red          0;31     Light Red     1;31  #
+# Green        0;32     Light Green   1;32  #
+# Brown/Orange 0;33     Yellow        1;33  #
+# Blue         0;34     Light Blue    1;34  #
+# Purple       0;35     Light Purple  1;35  #
+# Cyan         0;36     Light Cyan    1;36  #
+# Light Gray   0;37     White         1;37  #
+#-------------------------------------------#
+
+##  color variables for echo comments ##                         
+
+	WT='\033[1;37m' # White
+	NC='\033[0m'    # No Color
+
+echo -e "${WT}#------------------------------------------------------------------#
+##                            Aist                                ##
+###                                                              ###
+####              Arch Install Script Template                  ####
+#####     Read, edit and add to it for your preferences        #####
+####       Please provide your edits for inclusion at:          ####
+###                  http://www.xxxxx.com                        ###
+##   Lets keep this kiss, there are existing partitioning tools   ##
+#------------------------------------------------------------------#${NC}"
+
+#----------------------------------------------------------------------
+## asksure is an "ask to proceed" function used in all functions ##
+
+asksure() {
+echo -n -e "${WT} Proceed (Y/N) ? ${NC}"
+while read -r -n 1 -s answer; do
+  if [[ $answer = [YyNn] ]]; then
+    [[ $answer = [Yy] ]] && retval=0
+    [[ $answer = [Nn] ]] && exit
+    break
+  fi
+done
+return $retval
+}
+#----------------------------------------------------------------------
+
+# set -x
+
+format(){
+
+	## format partitions ##
+	yes | mkfs.ext4 /dev/sda1
+	yes | mkfs.ext4 /dev/sda3
+
+	echo -e "${WT} Formatted the partitions. ${NC}"
+	asksure
+}
+
+
+mounts(){
+	echo
+	echo
+
+	## set mounts and swap ##
+	mount /dev/sda1 /mnt
+	mkdir -p /mnt/home
+	mount /dev/sda3 /mnt/home
+	swapon /dev/sda2
+	lsblk | grep sda
+	echo	
+	echo -e "${WT} Mounted the partitions. ${NC}"
+	asksure
+	echo
+}
+
+
+setrepos(){
+	echo
+
+	## set repos ##
+	yes y |pacman -Sy reflector > /dev/null
+	reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
+	echo
+	cat /etc/pacman.d/mirrorlist
+	echo
+	echo -e "${WT} Set up mirrorlist. ${NC}"
+	asksure
+	echo
+}
+
+
+install(){
+	echo
+	echo
+# base base-devel wget grub
+
+	## install packages ##
+	echo -e "${WT} Installing the packages. This will take a while. ${NC}"
+	pacstrap /mnt base grub
+	genfstab -L /mnt > /mnt/etc/fstab
+
+	echo -e "${WT} Installed packages. ${NC}"
+	asksure
+	echo
+}
+
+
+chroot-heredoc(){
+set -x
+	## Chrooting into new filesystem to complete the install ##
+
+	arch-chroot /mnt <<-INchrootOUT
+
+	## set timezone ##
+	ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
+
+	hwclock --systohc
+
+	## set locale##
+	echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+	locale-gen
+
+	## set language ##
+	echo "LANG=en_US.UTF-8" >> /etc/locale.conf
+
+	## set keyboard ##
+	echo "KEYMAP=us" >> /etc/vconsole.conf
+
+	##  set hostname ##
+	echo "archtest" > /etc/hostname
+	echo "127.0.1.1  archtest.localdomain  archtest" >> /etc/hosts
+
+	## setup network ##
+	systemctl enable dhcpcd  
+
+	## setup boot loader ##
+	grub-install --target=i386-pc /dev/sda
+	grub-mkconfig -o /boot/grub/grub.cfg
+
+	## setup user ##
+	useradd -m -g users -G wheel -s /bin/bash jeff
+
+	## set passwords ##
+	yes test | passwd root
+	yes test | passwd jeff
+	sleep 2
+
+	echo
+	echo -e "${WT} Chrooted out of the new filesystem. ${NC}"
+	# asksure
+
+	echo -n -e "${WT} Proceed (Y/N) ? ${NC}"
+	while read -r -n 1 -s answer; do
+	  if [[ $answer = [YyNn] ]]; then
+	    [[ $answer = [Yy] ]] && retval=0
+	    [[ $answer = [Nn] ]] && exit
+	    break
+	  fi
+	done
+	return $retval
+
+INchrootOUT
+}
+
+
+unmounts(){
+set +x
+	## unmount partitions ##
+	echo
+	echo
+	umount /dev/sda3
+	umount /dev/sda1
+	echo
+	echo -e "${WT} Exited chroot. Unmounted partitions. Base installation completed ${NC}"
+	echo
+}
+
+	## run the functions and log them ##
+
+	format		2> format.log
+	mounts		2> mounts.log
+	setrepos
+	install		2>  install.log
+	chroot-heredoc  2>  chroot-heredoc.log
+	unmounts	2>  unmounts.log
+
+	lsblk | grep sda
+	echo
+	echo -e "${WT} Arch is a very serious distro for experienced users only! ${NC}"
+	sleep 2
+	echo -e "${WT} The Arch community must be treated with the utmost respect! ${NC}"
+	sleep 2
+	echo -e "${WT} .. aw screw that, just LEARN, ENJOY, and CONTRIBUTE! ${NC}"
+	echo
+# set +x
+
