@@ -25,7 +25,7 @@ Pstinst installs: xorg-server xorg-xinit xterm xorg-fonts xorg-twm virtualbox-gu
 
 It also sets up some important config files, and the script drops you into an editor to check or further edit those files. To proceed from nano, just close it (Ctrl + x). The files dropped into for editing can be identified in the upper part of nano. 
 
-To run pstins from a base Arch install, run:
+To run pstins from an Arch base install, run:
 
  wget https://raw.githubusercontent.com/jeffscode/saist/master/pstins && chmod +x pstins
  
@@ -48,11 +48,11 @@ To run saist from a live Arch iso, run:
  wget https://raw.githubusercontent.com/jeffscode/saist/master/aist && chmod +x aist
  
  or tinyurl: wget https://tinyurl.com/aist-4-arch && chmod +x aist
+ 
 md5sum aist
 92e85cf77f9bfc6ff877cd39f9ff639d  aist
 
   
-
  ./aist
 
 
