@@ -27,7 +27,8 @@ echo -e "${WT}#-----------------------------------------------------------------
 ###                  http://www.xxxxx.com                        ###
 ##   Lets keep this kiss, there are existing partitioning tools   ##
 #------------------------------------------------------------------#${NC}"
-
+echo
+sleep 5
 #----------------------------------------------------------------------
 ## asksure is an "ask to proceed" function used in all functions ##
 
