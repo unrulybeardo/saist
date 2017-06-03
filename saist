@@ -1,0 +1,50 @@
+#!/bin/bash
+	#............................................... saist script June 2 2017
+# set -x
+	mount /dev/sda1 /mnt
+	mkdir -p /mnt/home
+	mount /dev/sda3 /mnt/home
+                                                                               #  Create a /home dir and mount file systems
+  	swapon /dev/sda2
+        yes y |pacman -S reflector
+                                                                               #  Swapon for fstab inclusion
+	reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
+                                                                               #  Setup mirrors with reflector
+ 	pacstrap /mnt base base-devel wget grub
+                                                                               #  Install packages using pacstrap
+	genfstab -L /mnt > /mnt/etc/fstab
+                                                                               #  Generate /etc/fstab
+	arch-chroot /mnt << INchrootOUT
+                                       # ===================================== #  ENTER Here Doc for chroot
+	ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
+                                                                               #  Set America/Los_Angeles time zone in /etc/localtime
+	hwclock --systohc
+                                                                               #  Run hwclock to generate /etc/adjtime
+	echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+	locale-gen
+                                                                               #  Set en_US.UTF-8 UTF-8 in and generate /etc/locale.conf 
+	echo "LANG=en_US.UTF-8" >> /etc/locale.conf
+                                                                               #  Set the language in /etc/locale.conf
+	echo "KEYMAP=us" >> /etc/vconsole.conf
+                                                                               #  Setup the keyboard layout in /etc/vconsole.conf
+	echo "archtest" > /etc/hostname
+                                                                               #  Set the hostname in /etc/hostname
+	echo "127.0.1.1  archtest.localdomain  archtest" >> /etc/hosts
+                                                                               #  Add hostname to /etc/hosts
+	systemctl enable dhcpcd  
+                                                                               #  Enable dhcp dameon  
+	grub-install --target=i386-pc /dev/sda
+                                                                               #  Install and config grub
+	grub-mkconfig -o /boot/grub/grub.cfg
+
+	useradd -m -g users -G wheel -s /bin/bash jeff
+                                                                               #  Create a user asccount
+	yes test | passwd root
+	yes test | passwd jeff
+                                                                               #  Set both passwords to "test"
+
+INchrootOUT
+           # ================================================================= #  EXIT Here Doc for chroot
+
+# set +x
+	exit
