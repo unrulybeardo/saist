@@ -1,0 +1,46 @@
+#!/bin/bash
+	#............................................. pstins script May 31 2017
+
+	#....................................................................................... Install packages with pacman 
+ 	pacman -Syu  xorg-server  xorg-xinit  xterm xorg-fonts  xorg-twm virtualbox-guest-utils\
+		     virtualbox-guest-modules-arch  linux-headers  polkit  ttf-liberation\
+		     leafpad  xfce4  xfce4-goodies  gvfs  sudo
+
+set -x
+	cp /etc/X11/xinit/xinitrc /home/jeff/.xinitrc
+						       #......................................... Copy xinitrc to ~/
+	cp /etc/X11/xinit/xserverrc /home/jeff/.xserverrc
+							   #..................................... Copy xserverrc to ~/
+
+	sed -i '/twm/s/^/#/g' /home/jeff/.xinitrc
+	sed -i '/xclock/s/^/#/g' /home/jeff/.xinitrc
+	sed -i '/xterm/s/^/#/g' /home/jeff/.xinitrc
+						    #............................................ Comment out lines in ~/.xinitrc
+	sed -i '/exec/s/^/#/g' /home/jeff/.xserverrc
+						      #.......................................... Comment out line in ~/.xserverrc
+	sed -i '/End/s/^/#/g' /etc/hosts
+					  #...................................................... Comment out line in /etc/hosts
+	echo 'exec startxfce4 -- vt$XDG_VTNR' >> /home/jeff/.xinitrc
+								      #.......................... Append line to ~/.xinitrc
+	echo 'exec /usr/bin/Xorg -nolisten tcp "$@" vt$XDG_VTNR' >> /home/jeff/.xserverrc
+											  #...... Append line to ~/.xserverrc
+	echo '# End of file' >> /etc/hosts
+					    #.................................................... Append line to /etc/hosts
+	nano /home/jeff/.xinitrc
+				 #............................................................... Check ~/.xinitrc
+	nano /home/jeff/.xserverrc
+				   #............................................................. Check ~/.xserverrc
+	nano /etc/hosts
+			#........................................................................ Check /etc/hosts
+ 	sed -i '/%wheel ALL=(ALL) ALL/s/^#//' /etc/sudoers
+							    #.................................... Set up wheel for sudo 
+	EDITOR=nano visudo
+			    #..................................................................... Check suoders file
+
+	chown jeff /home/jeff/.xinitrc
+					 #........................................................ Ch owner of ~/.xinitrc to jeff 
+  	chown jeff /home/jeff/.xserverrc
+					   #...................................................... Ch owner of ~/.xserverrc to jeff
+
+set +x
+
