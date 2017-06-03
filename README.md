@@ -1,16 +1,16 @@
 # Saist    (Simple Arch Install Script Template)
 
-Saist25 is a 25 line (a few more now) bash script to install Arch Linux base, base-devel, grub, wget. It's made for my install prefrences, but could be very easily edited to suite on any x86 64 bios hardware.
+Saist is a 26 lines code bash script to install Arch Linux base, base-devel, grub, wget. It's made for my install prefrences, but could be very easily edited to suite on any x86 64 bios hardware.
 
-To run saist25 from a live Arch iso, run:
+To run saist from a live Arch iso, run:
 
- wget https://tinyurl.com/saist25 && chmod +x saist25
+ wget        && chmod +x saist
 
-md5sum saist25
+md5sum saist
+12dc622e85baed0b7242d25964197c37  saist
 
- 8a1cab02eb4736fd83035560dfb934d8  saist25
 
- ./saist25
+ ./saist
 
 # --------------------------------------------------------------------
 
@@ -24,21 +24,39 @@ It also sets up some important config files, and the script drops you into an ed
 
 To run pstins from a base Arch install, run:
 
- wget https://tinyurl.com/pstins && chmod +x pstins
+ wget         && chmod +x pstins
 
 md5sum pstins
+d9b6677fbc26507e74fb14129c7789b7  pstins
 
- c4582f24dc313d5aabc73cb8ae4af07c  pstins
 
  ./pstins
 
 # --------------------------------------------------------------------
 
-I've tested these in only a vbox bios setup so far. 
+# Aist    (Arch Install Script Template)
+
+Aist (Arch Install Script Template) is a longer version of saist that's setup with feedback to let the user know whats up while running, and is in a more traditional scripting style implementing functions.
+
+ wget            && chmod +x aist
+
+md5sum aist
+92e85cf77f9bfc6ff877cd39f9ff639d  aist
+
+  
+
+ ./aist
+
+
+# --------------------------------------------------------------------
+
+
+
+I've tested these in a vbox bios setup so far. 
 
 Partitions: sda1 is root, sda2 is swap, sda3 is home. 
 
-The passwords are set as "first" for root and jeff.
+The passwords are set as "test" or "first" for root and jeff.
 
 READ the scripts to assure yourself all is ok. If you're unsure, please don't run them.
 
