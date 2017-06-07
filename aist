@@ -1,24 +1,79 @@
 #!/bin/bash
-#...................................................... Aist Script June 2 2017
+#----------------------------------------------- Aist Script June 6 2017
+# set -x
+#
+# NOTE: Edit /usr/bin/pacstrap line 339 to add
+# "--needed" option to pacman to expedite testing
+#
+#----------------------------------------------------------------------
+     ## Color Variables NEED MANUALLY EDITED TO SUIT INSTALL.##
 
-#      Optional color variables list        #
-#-------------------------------------------#
-# Black        0;30     Dark Gray     1;30  #
-# Red          0;31     Light Red     1;31  #
-# Green        0;32     Light Green   1;32  #
-# Brown/Orange 0;33     Yellow        1;33  #
-# Blue         0;34     Light Blue    1;34  #
-# Purple       0;35     Light Purple  1;35  #
-# Cyan         0;36     Light Cyan    1;36  #
-# Light Gray   0;37     White         1;37  #
-#-------------------------------------------#
+# Black         '\033[0;30m'
+# Blue          '\033[0;34m'   # Light Blue    '\033[1;34m'
+# Brown/Orange  '\033[0;33m' 
+# Cyan          '\033[0;36m'   # Light Cyan    '\033[1;36m'
+# Dark Gray     '\033[1;30m'   # Light Gray    '\033[0;37m' 
+# Green         '\033[0;32m'   # Light Green   '\033[1;32m'
+# Purple        '\033[0;35m'   # Light Purple  '\033[1;35m'  
+# Red           '\033[0;31m'   # Light Red     '\033[1;31m'  
+# White         '\033[1;37m'   # Yellow        '\033[1;33m'   
+# Cancel Color  '\033[0m'
+ 
 
-##  color variables for echo comments ##                         
+MT='\033[1;37m'  # For Main Text          # White
+CH='\033[1;33m'  # For Chroot Text        # Yellow
+CC='\033[0m'     # To Cancel Text Color
 
-	WT='\033[1;37m' # White
-	NC='\033[0m'    # No Color
 
-echo -e "${WT}#------------------------------------------------------------------#
+#----------------------------------------------------------------------
+ ## Set Up User And Passwords NEED MANUALLY EDITED TO SUIT INSTALL.##
+
+URN=jeff  # Username
+URP=tess  # User Password 
+RTP=root  # Root Password
+
+
+#----------------------------------------------------------------------
+    ## STORAGE VARIABLES NEED MANUALLY EDITED TO SUIT INSTALL.##
+
+# set the hdd or hdd. uncomment first comment on line to activate #
+
+HDD=sda
+# HDD=sdb
+# HDD=sdc
+# HDD=sdd
+# HDD=sde
+
+# set root partition. uncomment line to activate #
+
+ROOTP=/dev/sda1
+# ROOTP=/dev/sda2
+# ROOTP=/dev/sda3
+# ROOTP=/dev/sda4
+# ROOTP=/dev/sda5
+
+# set home partition. uncomment line to activate #
+
+# HOMEP=/dev/sda1
+# HOMEP=/dev/sda2
+HOMEP=/dev/sda3 
+# HOMEP=/dev/sda4
+# HOMEP=/dev/sda5
+
+# set swap partition. uncomment line to activate #
+
+# SWAP=/dev/sda1 
+SWAP=/dev/sda2
+# SWAP=/dev/sda3
+# SWAP=/dev/sda4
+# SWAP=/dev/sda5
+
+##################################################################################
+########## ALL VARIABLES ABOVE NEED MANUAL EDITING TO SUITE INSALL ###############
+##################################################################################
+
+	
+echo -e "${MT}#------------------------------------------------------------------#
 ##                            Aist                                ##
 ###                                                              ###
 ####              Arch Install Script Template                  ####
@@ -26,172 +81,213 @@ echo -e "${WT}#-----------------------------------------------------------------
 ####       Please provide your edits for inclusion at:          ####
 ###                  http://www.xxxxx.com                        ###
 ##   Lets keep this kiss, there are existing partitioning tools   ##
-#------------------------------------------------------------------#${NC}"
-echo
-sleep 5
+#------------------------------------------------------------------#${CC}"
+
+	echo
+	echo -e "${CH} Chroot section = yellow font. ${CC}"
+	echo
+	echo
+	echo
+
 #----------------------------------------------------------------------
-## asksure is an "ask to proceed" function used in all functions ##
+ ## asksure is an "ask to proceed" fuction used in all functions ##
 
 asksure() {
-echo -n -e "${WT} Proceed (Y/N) ? ${NC}"
-while read -r -n 1 -s answer; do
-  if [[ $answer = [YyNn] ]]; then
-    [[ $answer = [Yy] ]] && retval=0
-    [[ $answer = [Nn] ]] && exit
-    break
-  fi
-done
-return $retval
-}
-#----------------------------------------------------------------------
-
-# set -x
-
-format(){
-
-	## format partitions ##
-	yes | mkfs.ext4 /dev/sda1
-	yes | mkfs.ext4 /dev/sda3
-
-	echo -e "${WT} Formatted the partitions. ${NC}"
-	asksure
-}
-
-
-mounts(){
-	echo
-	echo
-
-	## set mounts and swap ##
-	mount /dev/sda1 /mnt
-	mkdir -p /mnt/home
-	mount /dev/sda3 /mnt/home
-	swapon /dev/sda2
-	lsblk | grep sda
-	echo	
-	echo -e "${WT} Mounted the partitions. ${NC}"
-	asksure
-	echo
-}
-
-
-setrepos(){
-	echo
-
-	## set repos ##
-	yes y |pacman -Sy reflector > /dev/null
-	reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
-	echo
-	cat /etc/pacman.d/mirrorlist
-	echo
-	echo -e "${WT} Set up mirrorlist. ${NC}"
-	asksure
-	echo
-}
-
-
-install(){
-	echo
-	echo
-# base base-devel wget grub
-
-	## install packages ##
-	echo -e "${WT} Installing the packages. This will take a while. ${NC}"
-	pacstrap /mnt base grub
-	genfstab -L /mnt > /mnt/etc/fstab
-
-	echo -e "${WT} Installed packages. ${NC}"
-	asksure
-	echo
-}
-
-
-chroot-heredoc(){
-set -x
-	## Chrooting into new filesystem to complete the install ##
-
-	arch-chroot /mnt <<-INchrootOUT
-
-	## set timezone ##
-	ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
-
-	hwclock --systohc
-
-	## set locale##
-	echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
-	locale-gen
-
-	## set language ##
-	echo "LANG=en_US.UTF-8" >> /etc/locale.conf
-
-	## set keyboard ##
-	echo "KEYMAP=us" >> /etc/vconsole.conf
-
-	##  set hostname ##
-	echo "archtest" > /etc/hostname
-	echo "127.0.1.1  archtest.localdomain  archtest" >> /etc/hosts
-
-	## setup network ##
-	systemctl enable dhcpcd  
-
-	## setup boot loader ##
-	grub-install --target=i386-pc /dev/sda
-	grub-mkconfig -o /boot/grub/grub.cfg
-
-	## setup user ##
-	useradd -m -g users -G wheel -s /bin/bash jeff
-
-	## set passwords ##
-	yes test | passwd root
-	yes test | passwd jeff
-	sleep 2
 
 	echo
-	echo -e "${WT} Chrooted out of the new filesystem. ${NC}"
-	# asksure
-
-	echo -n -e "${WT} Proceed (Y/N) ? ${NC}"
+	echo -n -e "${MT} Proceed (Y/N) ? ${CC}"
 	while read -r -n 1 -s answer; do
-	  if [[ $answer = [YyNn] ]]; then
-	    [[ $answer = [Yy] ]] && retval=0
-	    [[ $answer = [Nn] ]] && exit
+	  if [[ $answer = [YyNn] ]] ; then
+	     [[ $answer = [Yy] ]] && retval=0 && echo -e " ${CC}Answered ${MT}Yes${CC}, Proceeding ${CC} "
+	     [[ $answer = [Nn] ]] && retval=0 && echo -e " ${CC}Answered ${MT}No${CC}, Exiting Installer ${CC} " && echo && exit
 	    break
 	  fi
-	done
+ 	done
 	return $retval
+}
+
+#----------------------------------------------------------------------
+
+umounts(){
+
+	## unmount just in case ##
+	umount $HOMEP  &> /dev/null
+	umount $ROOTP &> /dev/null
+	swapoff $SWAP &> /dev/null
+	echo "root is mounted on $ROOTP"
+	echo "home is mounted on $HOMEP"
+	echo "swap is mounted on $SWAP"
+	echo "username is $URN"
+	echo "user password is $URP"
+	echo "root password is $RTP"
+	echo
+	echo -e "${MT} The partitions you set up will be formatted. ${CC}"
+	echo -e "${MT} All data will be lost. Last chance to stop. ${CC}"
+	asksure
+}
+
+#----------------------------------------------------------------------
+
+formats(){
+
+	## SET PARTITIONS TO BE FORMATTED HERE ##
+	yes | mkfs.ext4 $ROOTP
+	yes | mkfs.ext4 $HOMEP 
+}
+
+#----------------------------------------------------------------------
+
+mounts(){
+
+	## set mount points and swap ##
+	echo
+	mount $ROOTP /mnt
+	mkdir -p /mnt/home
+	mount $HOMEP  /mnt/home
+	swapon $SWAP
+	lsblk | grep $HDD
+		echo	
+	echo -e "${MT} Partitions shown mounted have been formatted, ready for installation. ${CC}"
+
+	asksure
+	echo
+}
+
+#----------------------------------------------------------------------
+
+setrepos(){
+
+	## set repos ##
+		echo
+	yes y |pacman -Sy --needed reflector > /dev/null
+	reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
+		echo
+	cat /etc/pacman.d/mirrorlist
+		echo
+	echo -e "${MT} Updated the local mirrorlist. ${CC}"
+	echo -e "${MT} These will be integrated into new install. ${CC}"
+	asksure
+	echo
+}
+
+#----------------------------------------------------------------------
+
+install(){
+
+ 	## install packages ##
+		echo
+		echo
+	echo -e "${MT} Installing the packages. This will take a while. ${CC}"
+	echo
+	pacstrap /mnt base grub #base-devel wget
+
+	genfstab -L /mnt > /mnt/etc/fstab
+	echo
+	echo -e "${MT} Installed packages and set up /etc/fstab. ${CC}"
+	asksure
+	echo
+}
+
+#----------------------------------------------------------------------
+                        ## Chroot ##
+chroot-heredoc(){
+							## INFO TO USER ##
+  ## COMMANDS ##
+							echo -e "${CH} Chrooting into new filesystem to configure ${CC}"
+  arch-chroot /mnt << INchrootOUT /bin/bash
+							echo 'command: arch-chroot /mnt << ICChrootOUT /bin/bash'
+
+							echo -e "${CH} Setting Timezone ${CC}"
+  ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime 
+  hwclock --systohc
+							echo 'command: ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime'
+							echo 'command: hwclock --systohc'
+
+							echo -e "${CH} Setting Locale ${CC}"
+  echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+  locale-gen
+							echo 'command: echo en_US.UTF-8 UTF-8" >> /etc/locale.gen'
+							echo 'command: locale-gen'
+
+							echo -e "${CH} Setting Language ${CC}"
+  echo "LANG=en_US.UTF-8" >> /etc/locale.conf
+							echo 'command: echo "LANG=en_US.UTF-8" >> /etc/locale.conf'
+
+							echo -e "${CH} Setting up Keyboard ${CC}"
+  echo "KEYMAP=us" >> /etc/vconsole.conf
+							echo 'command: echo "KEYMAP=us" >> /etc/vconsole.conf'
+
+							echo -e "${CH} Setting Hostname ${CC}"
+  echo "archtest" > /etc/hostname
+  echo "127.0.1.1  archtest.localdomain  archtest" >> /etc/hosts
+							echo 'command: echo "archtest" > /etc/hostname'
+							echo 'command: echo "127.0.1.1  archtest.localdomain  archtest" >> /etc/hosts'
+
+							echo -e "${CH} Setting up Network ${CC}"
+  systemctl enable dhcpcd
+							echo 'command: systemctl enable dhcpcd'
+
+
+							echo -e "${CH} Setting up Bootloader ${CC}"
+  grub-install --target=i386-pc /dev/sda
+  grub-mkconfig -o /boot/grub/grub.cfg
+
+							echo -e "${CH} Setting up User ${CC}"
+  useradd -m -g users -G wheel -s /bin/bash $URN
+                                                        echo 'command: useradd -m -g users -G wheel -s /bin/bash $URN'
+							echo -e "${CH} Seting Passwords ${CC}"
+  yes $RTP | passwd root
+  yes $URP | passwd $URN
+
+							echo -e "${CH} Chrooting out of new filesystem. ${CC}"
+							echo
 
 INchrootOUT
+
 }
 
+#----------------------------------------------------------------------
+                     ## Just A Message ##
+completedchr(){
 
+	echo -e "${MT} Completed chroot configuration. ${CC}"
+	asksure
+	echo
+}
+
+#----------------------------------------------------------------------
+	               ## Unmount Partitions ##
 unmounts(){
-set +x
-	## unmount partitions ##
-	echo
-	echo
-	umount /dev/sda3
-	umount /dev/sda1
-	echo
-	echo -e "${WT} Exited chroot. Unmounted partitions. Base installation completed ${NC}"
+
+	umount $HOMEP 
+	umount $ROOTP
+	swapoff $SWAP
 	echo
 }
 
-	## run the functions and log them ##
+#----------------------------------------------------------------------
+              ## Run Functions, Optionally Log Them ##
 
-	format		2> format.log
-	mounts		2> mounts.log
-	setrepos
-	install		2>  install.log
-	chroot-heredoc  2>  chroot-heredoc.log
-	unmounts	2>  unmounts.log
+	umounts		 # 2> umount.log
+	formats		 # 2> format.log
+	mounts		 # 2> mounts.log
+	setrepos	 # 2> setrepos.log
+	install		 # 2> install.log
+	chroot-heredoc   # 2> chrdoc.log
+	completedchr     # 2> completedchr
+	unmounts	 # 2> tee unmounts.log
 
-	lsblk | grep sda
+#----------------------------------------------------------------------
+             ## Show Partitions Unmounted And Message ##
+
+	lsblk | grep $HDD
+
 	echo
-	echo -e "${WT} Arch is a very serious distro for experienced users only! ${NC}"
-	sleep 2
-	echo -e "${WT} The Arch community must be treated with the utmost respect! ${NC}"
-	sleep 2
-	echo -e "${WT} .. aw screw that, just LEARN, ENJOY, and CONTRIBUTE! ${NC}"
+	echo -e "${MT} Installation completed. ${CC}"
+	echo -e "${MT} Above to verify partitions unmounted. ${CC}" 
 	echo
+
+#----------------------------------------------------------------------
+
 # set +x
-
+exit
