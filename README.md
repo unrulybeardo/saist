@@ -1,6 +1,6 @@
 # Saist    (Simple Arch Install Script Template)
 
-Saist is a 26 lines code bash script to install Arch Linux base, base-devel, grub, wget. It's made for my install prefrences, but could be very easily edited to suite on any x86 64 bios hardware.
+Saist is a 26 lines code bash script to install Arch Linux base, base-devel, grub, wget. Customized for my preferences. Could be used, edited to suite on any x86 64 bios hardware.
 
 To run saist from a live Arch iso, run:
 
