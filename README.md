@@ -13,8 +13,9 @@ To run inst from a live Arch iso, run:
 
 or tinyurl: wget https://tinyurl.com/instarch && chmod +x inst
 
-$ md5sum inst
-355ee5d54583c32523a3567b0bec4d21  inst
+$ md5sum inst<br>
+7747bb06e2036c2df14c1d63f84650ff  inst
+
 
  ./inst
 
@@ -31,7 +32,7 @@ To run saist from a live Arch iso, run:
  
 or tinyurl: wget https://tinyurl.com/archsaist && chmod +x saist
 
-$ md5sum saist
+$ md5sum saist<br>
 12dc622e85baed0b7242d25964197c37  saist
 
 
@@ -53,7 +54,7 @@ To run pstins from an Arch base install, run:
  
  or tinyurl: wget https://tinyurl.com/archpstins && chmod +x pstins
 
-md5sum pstins
+md5sum pstins<br>
 d9b6677fbc26507e74fb14129c7789b7  pstins
 
 
@@ -71,7 +72,7 @@ To run saist from a live Arch iso, run:
  
  or tinyurl: wget https://tinyurl.com/aist-4-arch && chmod +x aist
 
-$ md5sum aist
+$ md5sum aist<br>
 66d5e4ff37980d381d7069f375ecaa1a  aist
 
  ./aist
