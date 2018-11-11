@@ -18,9 +18,8 @@ $ md5sum inst
 
  ./inst
 
+
 # --------------------------------------------------------------------
-
-
 
 # Saist    (Simple Arch Install Script Template)
 
