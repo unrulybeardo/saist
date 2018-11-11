@@ -1,3 +1,22 @@
+Nov, 2018 Update:
+
+# inst
+
+The latest Arch install script inst, installs an xfce DE. As with the other older scripts here, this is a template needing edited before use. 
+I'd like to think it as some what of a balance between minimal and practical, with the intent of easing things for me, the user. Tested in vbox. 
+Admittedly, I need to step things up with updating/replacing my preferred msdos partition table. As far as I know, there's not been new hardware 
+available that's compatible with this for quite some time.
+
+
+
+
+$ md5sum inst
+355ee5d54583c32523a3567b0bec4d21  inst
+
+
+
+
+
 # Saist    (Simple Arch Install Script Template)
 
 Saist is a 26 lines code bash script to install Arch Linux base, base-devel, grub, wget. Easily edited for any x86 64 bios hardware.
@@ -8,8 +27,7 @@ To run saist from a live Arch iso, run:
  
 or tinyurl: wget https://tinyurl.com/archsaist && chmod +x saist
 
-
-md5sum saist
+$ md5sum saist
 12dc622e85baed0b7242d25964197c37  saist
 
 
@@ -48,11 +66,10 @@ To run saist from a live Arch iso, run:
  wget https://raw.githubusercontent.com/jeffscode/saist/master/aist && chmod +x aist
  
  or tinyurl: wget https://tinyurl.com/aist-4-arch && chmod +x aist
- 
-md5sum aist
-92e85cf77f9bfc6ff877cd39f9ff639d  aist
 
-  
+$ md5sum aist
+66d5e4ff37980d381d7069f375ecaa1a  aist
+
  ./aist
 
 

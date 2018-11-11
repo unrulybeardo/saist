@@ -1,0 +1,244 @@
+#!/bin/bash
+# inst-2018-11-10
+#
+# Search for '#=====#=====#' to find/edit customizations.
+#
+
+####    SET UP A LOCAL PACMAN CACHE EXAMPLE:
+####  After symlinking contents of  /var/cache/pacman/pkg/  ,  /var/lib/pacman/sync/  to  /home/$USER/www/repo/
+####  Run sudo pacman -Sw --cachedir /home/$USER/www/repo/ --needed base base-devel <all other needed packages>
+####  Above command downloads any packages not installed in the "local pacman cache" of the server.
+####  Install darkhttpd (webfs won't do symlinks) and run:
+####  $ darkhttpd /home/$USER/www/repo --port 8080
+
+
+#=====#=====# logging #===========# (breaks nano use in script)
+# exec &> >(tee -a install.log) >&1
+# exec 2>&1 | tee install.log
+
+
+#=====#=====# User, password, hostname, editor variables. #===========#
+
+URN=jeff	## Username      ##
+URP=test	## User Password ##
+RTP=test	## Root Password ##
+HTN=archtest	## Hostname      ##
+EDR=nano	## Editor        ##
+
+#=====#=====# Partition variables. #===========#
+
+HDD=sda			## set bootloader location. ##
+DDI=/dev/sda		## set device for disklabel and installation. ##
+DLT=msdos		## set disklabel type. ##
+ROOTP=/dev/sda1		## set root partition. ##
+HOMEP=/dev/sda3		## set home partition. ##
+SWAP=/dev/sda2		## set swap partition. ##
+
+	umount $HOMEP
+	umount $ROOTP
+	swapoff $SWAP 2>/dev/null
+
+set -uo pipefail
+trap 's=$?; echo "$0: Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
+
+Partition(){
+
+	parted "$DDI" mklabel "$DLT"
+	parted "$DDI" mkpart primary ext4 0% 70%
+	parted "$DDI" set 1 boot on
+	parted "$DDI" mkpart primary linux-swap 70% 80%
+	parted "$DDI" mkpart primary ext4 80% 100%
+}
+
+formats(){
+
+	yes | mkfs.ext4 $ROOTP
+	yes | mkfs.ext4 $HOMEP
+	mkswap /dev/sda2
+}
+
+mounts(){
+
+	mount $ROOTP /mnt
+	mkdir -p /mnt/home
+	mount $HOMEP  /mnt/home
+	swapon $SWAP
+
+}
+
+setrepos(){
+
+	pacman -Sy --noconfirm --needed reflector
+
+#=====#=====# Local pacman cache/repo in mirrorlist #===========#
+
+	echo 'Server = http://192.168.2.2:8080/' > /etc/pacman.d/mirrorlist
+
+	reflector --latest 5 --sort rate >> /etc/pacman.d/mirrorlist
+	echo; echo "Next we'll drop you in the mirrorlist in nano."
+	sleep 5
+	"${EDR}" /etc/pacman.d/mirrorlist
+}
+
+install(){
+
+	pacstrap /mnt   base base-devel grub wget sudo\
+			xorg-server xorg-xinit xterm xorg-fonts xorg-twm\
+			virtualbox-guest-utils virtualbox-guest-modules-arch\
+			linux-headers polkit ttf-dejavu ttf-liberation leafpad\
+			xfce4 xfce4-goodies gvfs
+
+	genfstab -L /mnt > /mnt/etc/fstab
+
+}
+
+Configure(){
+
+	arch-chroot /mnt ln -sf /usr/share/zoneinfo/America/Los_Angeles		/etc/localtime
+	arch-chroot /mnt hwclock --systohc
+
+	echo "en_US.UTF-8 UTF-8" >>						/mnt/etc/locale.gen
+	arch-chroot /mnt locale-gen
+
+	echo "LANG=en_US.UTF-8" >>						/mnt/etc/locale.conf
+
+	echo "KEYMAP=us" >>							/mnt/etc/vconsole.conf
+
+	echo "${HTN}" >								/mnt/etc/hostname
+
+	echo "127.0.1.1 ${HTN}.localdomain ${HTN}" >>				/mnt/etc/hosts
+	echo '# End of file' >>							/mnt/etc/hosts
+	# sed -i '/End/s/^/#/g' /mnt/etc/hosts
+
+	arch-chroot /mnt systemctl enable dhcpcd
+
+	arch-chroot /mnt grub-install --target=i386-pc /dev/$HDD
+	arch-chroot /mnt grub-mkconfig -o 					/boot/grub/grub.cfg
+
+	arch-chroot /mnt useradd -m -g users -G wheel -s /bin/bash "${URN}"
+
+	echo "${URN}:${URP}" | chpasswd -R /mnt
+	echo   "root:${RTP}" | chpasswd -R /mnt
+
+	sed -i '/%wheel ALL=(ALL) ALL/s/^#//'					/mnt/etc/sudoers
+
+	cp /mnt/etc/X11/xinit/xinitrc 						/mnt/home/$URN/.xinitrc
+	sed -i '/twm/s/^/#/g'         						/mnt/home/$URN/.xinitrc
+	sed -i '/xclock/s/^/#/g'      						/mnt/home/$URN/.xinitrc
+	sed -i '/xterm/s/^/#/g'       						/mnt/home/$URN/.xinitrc
+	echo 'exec startxfce4' >>     						/mnt/home/$URN/.xinitrc
+	arch-chroot /mnt chown $URN						    /home/$URN/.xinitrc
+
+	cp /mnt/etc/X11/xinit/xserverrc						/mnt/home/$URN/.xserverrc
+	sed -i '/exec/s/^/#/g'							/mnt/home/$URN/.xserverrc
+	echo 'exec /usr/bin/Xorg -keeptty -nolisten tcp $@ vt$XDG_VTNR' >>	/mnt/home/$URN/.xserverrc
+	arch-chroot /mnt chown $URN						    /home/$URN/.xserverrc
+
+}
+
+mesg(){
+
+	echo " The install is done except verifying and editing config files."
+	echo " Answering no here will exit, completing the install."
+	echo " Answering no after this will skip the named file."; echo
+}
+
+asksure(){
+	echo -n " Proceed ? (Y/N)"
+	while read -r -n 1 -s answer 
+                   do
+                      if [[ $answer = [YyNn] ]] ; then 
+                         [[ $answer = [Yy] ]] && echo " Answered Yes " && XX=0 && break
+                         [[ $answer = [Nn] ]] && echo " Answered No  " && XX=1 && break
+                      fi
+                   done
+	return
+}
+
+checking1(){
+		clear
+		echo; echo " Checking ~/.xinitrc in ${EDR}"
+		asksure
+		if [[ $XX = 0 ]]; then
+			"${EDR}" /mnt/home/$URN/.xinitrc
+			checking2
+		else
+			checking2 
+		fi
+}
+checking2(){
+		clear
+		echo; echo " Checking ~/.xserverrc in ${EDR}"
+		asksure
+		if [[ $XX = 0 ]]; then
+			"${EDR}" /mnt/home/$URN/.xserverrc
+			checking3
+		else
+			checking3 
+		fi
+}
+checking3(){
+		clear
+		echo; echo " Checking /etc/hosts in ${EDR}"
+		asksure
+		if [[ $XX = 0 ]]; then
+			"${EDR}" /mnt/etc/hosts
+			checking4
+		else
+			checking4 
+		fi
+}
+checking4(){
+		clear
+		echo; echo " Checking /etc/sudoers in ${EDR} with visudo"
+		asksure 
+		if [[ $XX = 0 ]]; then
+			EDITOR="${EDR}" visudo --file=/mnt/etc/sudoers
+			checking5
+		else
+			checking5
+		fi
+}
+
+checking5(){
+		clear
+		echo; echo " Checking /etc/locale.gen in ${EDR}"
+		asksure 
+		if [[ $XX = 0 ]]; then
+			"${EDR}" /mnt/etc/locale.gen
+			checking6
+		else
+			checking6
+		fi
+}
+
+checking6(){
+		clear
+		echo; echo " Checking /etc/locale.conf in ${EDR}"
+		asksure 
+		if [[ $XX = 0 ]]; then
+			"${EDR}" /mnt/etc/locale.conf
+			XX=1
+		fi
+}
+
+umnts(){
+
+	umount $HOMEP 
+	umount $ROOTP
+	swapoff $SWAP
+	echo; echo " Install Completed"; echo
+}
+
+## Run Functions ##
+
+	Partition
+	formats
+	mounts
+	setrepos
+	install
+	Configure
+	mesg
+	asksure
+	if [[ $XX = 0 ]]; then checking1; fi
+	umnts
