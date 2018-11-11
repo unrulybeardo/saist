@@ -10,6 +10,8 @@
 ####  Above command downloads any packages not installed in the "local pacman cache" of the server.
 ####  Install darkhttpd (webfs won't do symlinks) and run:
 ####  $ darkhttpd /home/$USER/www/repo --port 8080
+####  To use it, for this case, add 'Server = http://192.168.2.2:8080/' to /etc/pacman.d/mirrorlist
+####  See line 77
 
 
 #=====#=====# logging #===========# (breaks nano use in script)
