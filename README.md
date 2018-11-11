@@ -1,6 +1,5 @@
-Nov, 2018 Update:
 
-# inst
+# inst (Nov, 2018 Update:)
 
 The latest Arch install script inst, installs an xfce DE. As with the other older scripts here, this is a template needing edited before use. 
 I'd like to think it as some what of a balance between minimal and practical, with the intent of easing things for me, the user. Tested in vbox. 
