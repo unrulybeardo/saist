@@ -7,13 +7,18 @@ I'd like to think it as some what of a balance between minimal and practical, wi
 Admittedly, I need to step things up with updating/replacing my preferred msdos partition table. As far as I know, there's not been new hardware 
 available that's compatible with this for quite some time.
 
+To run inst from a live Arch iso, run:
 
+ wget https://raw.githubusercontent.com/Cody-Learner/saist/master/inst && chmod +x inst
 
+or tinyurl: https://tinyurl.com/archinst
 
 $ md5sum inst
 355ee5d54583c32523a3567b0bec4d21  inst
 
+ ./inst
 
+# --------------------------------------------------------------------
 
 
 
