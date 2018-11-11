@@ -11,7 +11,7 @@ To run inst from a live Arch iso, run:
 
  wget https://raw.githubusercontent.com/Cody-Learner/saist/master/inst && chmod +x inst
 
-or tinyurl: https://tinyurl.com/archinst
+or tinyurl: https://tinyurl.com/archinst && chmod +x inst
 
 $ md5sum inst
 355ee5d54583c32523a3567b0bec4d21  inst
