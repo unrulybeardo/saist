@@ -39,9 +39,11 @@ set -x
 			    #..................................................................... Check suoders file
 
 	chown beardo /home/beardo/.xinitrc
-					 #........................................................ Ch owner of ~/.xinitrc to jeff 
+					 #........................................................ Ch owner of ~/.xinitrc to beardo
   	chown beardo /home/beardo/.xserverrc
-					   #...................................................... Ch owner of ~/.xserverrc to jeff
-
+					   #...................................................... Ch owner of ~/.xserverrc to beardo
+	systemctl enable NetworkManager.service
+	systemctl enable lightdm.service
+	                                   #......................................................start networking and lightdm daemons
 set +x
 
