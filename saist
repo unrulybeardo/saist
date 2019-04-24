@@ -16,7 +16,7 @@
                                                                                #  Generate /etc/fstab
 	arch-chroot /mnt << INchrootOUT
                                        # ===================================== #  ENTER Here Doc for chroot
-	ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
+	ln -sf /usr/share/zoneinfo/America/Chicago /etc/localtime
                                                                                #  Set America/Los_Angeles time zone in /etc/localtime
 	hwclock --systohc
                                                                                #  Run hwclock to generate /etc/adjtime
@@ -27,9 +27,9 @@
                                                                                #  Set the language in /etc/locale.conf
 	echo "KEYMAP=us" >> /etc/vconsole.conf
                                                                                #  Setup the keyboard layout in /etc/vconsole.conf
-	echo "archtest" > /etc/hostname
+	echo "quickarch" > /etc/hostname
                                                                                #  Set the hostname in /etc/hostname
-	echo "127.0.1.1  archtest.localdomain  archtest" >> /etc/hosts
+	echo "127.0.1.1  quickarch.localdomain  quickarch" >> /etc/hosts
                                                                                #  Add hostname to /etc/hosts
 	systemctl enable dhcpcd  
                                                                                #  Enable dhcp dameon  
@@ -37,10 +37,10 @@
                                                                                #  Install and config grub
 	grub-mkconfig -o /boot/grub/grub.cfg
 
-	useradd -m -g users -G wheel -s /bin/bash jeff
+	useradd -m -g users -G wheel -s /bin/bash beardo
                                                                                #  Create a user asccount
 	yes test | passwd root
-	yes test | passwd jeff
+	yes test | passwd beardo
                                                                                #  Set both passwords to "test"
 
 INchrootOUT
