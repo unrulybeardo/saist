@@ -10,7 +10,9 @@
                                                                                #  Swapon for fstab inclusion
 	reflector --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
                                                                                #  Setup mirrors with reflector
- 	pacstrap /mnt base base-devel wget grub
+ 	pacstrap /mnt base base-devel wget grub git nm-connection-editor\
+	          network-manager-applet  networkmanager-openconnect\
+		  networkmanager-openvpn
                                                                                #  Install packages using pacstrap
 	genfstab -L /mnt > /mnt/etc/fstab
                                                                                #  Generate /etc/fstab
